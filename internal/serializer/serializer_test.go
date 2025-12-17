@@ -185,6 +185,11 @@ func TestTableSerializer(t *testing.T) {
 	// Fill first cell
 	row0, _ := table.Row(0)
 	cell, _ := row0.Cell(0)
+	cell.SetBorders(domain.TableBorders{Top: domain.BorderStyle{
+		Style: domain.BorderSingle,
+		Width: 4,
+		Color: domain.ColorRed,
+	}})
 	cellPara, _ := cell.AddParagraph()
 	cellRun, _ := cellPara.AddRun()
 	cellRun.SetText("Cell 0,0")
@@ -211,6 +216,10 @@ func TestTableSerializer(t *testing.T) {
 	firstCell := xmlTable.Rows[0].Cells[0]
 	if len(firstCell.Content) == 0 {
 		t.Fatal("expected at least one element in first cell content")
+	}
+
+	if firstCell.Properties.Borders == nil || firstCell.Properties.Borders.Top == nil {
+		t.Errorf("expected border top to be set")
 	}
 	firstPara, ok := firstCell.Content[0].(*xmlstructs.Paragraph)
 	if !ok {
