@@ -780,7 +780,25 @@ func (s *TableSerializer) serializeCellProperties(cell domain.TableCell) *xml.Ta
 		}
 	}
 
+	// Borders (table cell borders)
+	borders := cell.Borders()
+	if s.hasTableBorders(borders) {
+		props.Borders = &xml.TableBorders{
+			Top:    s.paraSerializer.serializeBorder(borders.Top),
+			Bottom: s.paraSerializer.serializeBorder(borders.Bottom),
+			Left:   s.paraSerializer.serializeBorder(borders.Left),
+			Right:  s.paraSerializer.serializeBorder(borders.Right),
+		}
+	}
+
 	return props
+}
+
+func (s *TableSerializer) hasTableBorders(borders domain.TableBorders) bool {
+	return borders.Top.Style != domain.BorderNone ||
+		borders.Bottom.Style != domain.BorderNone ||
+		borders.Left.Style != domain.BorderNone ||
+		borders.Right.Style != domain.BorderNone
 }
 
 func (s *TableSerializer) widthTypeToString(wType domain.WidthType) string {
